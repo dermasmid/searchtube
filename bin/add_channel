@@ -1,0 +1,7 @@
+#!/usr/local/bin/python3
+from gotube import utils
+import sys
+
+
+if __name__ == '__main__':
+    utils.add_channel(sys.argv[1])
