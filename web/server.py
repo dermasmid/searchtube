@@ -15,11 +15,23 @@ limiter = Limiter(
 
 @app.route('/')
 def hello():
-    return render_template('index.html')
+    channels = gotube.utils.get_channels()
+    return render_template('index.html', channels= channels)
 
 
 @app.route('/search')
 @limiter.limit('15/minute')
 def search():
     q = request.args.get('q')
-    return {'data': gotube.search.search('UCXv-co3EYHF7aOH4A93qAHQ', q)}
+    # check if exsits
+    channel_id = request.args.get('channel_id')
+    if channel_id == '0':
+        channel_id = gotube.utils.get_channels()[0]['channel_id']
+    if gotube.utils.channel_is_in_db(channel_id):
+        try:
+            results = gotube.search.search(channel_id, q)
+        except:
+            results = []
+        return {'data': results}
+    else:
+        return {}

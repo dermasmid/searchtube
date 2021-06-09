@@ -22,3 +22,6 @@ build:
 
 ps:
 	docker-compose ps
+
+restart:
+	docker-compose restart

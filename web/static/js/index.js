@@ -3,15 +3,6 @@ var data = []
 var numOfresults = 0
 let searchTerm = ''
 
-document.getElementById('search-form').addEventListener("submit", (e) => {
-    e.preventDefault();
-    let searchInput = document.getElementById('search')
-    searchTerm = searchInput.value;
-    searchInput.value = ''
-    getData('/search?q=' + searchTerm.toLowerCase(), handleData)
-});
-
-
 
 
 function getData(url, callback) {
@@ -112,3 +103,26 @@ function runInit() {
 }
 
 runInit()
+
+
+
+$(document).ready(function() {
+    $('select').niceSelect()
+
+    document.getElementById('search-form').addEventListener("submit", (e) => {
+        e.preventDefault();
+        let q = document.getElementById('search')
+        searchTerm = q.value;
+        q.value = ''
+        let channel = document.getElementById('channel-select')
+        let channelId
+        if (channel) {
+            channelId = channel.value
+        } else {
+            channelId = 0
+        }
+        getData('/search?q=' + searchTerm.toLowerCase() + '&channel_id=' + channelId, handleData)
+    });
+
+
+  });

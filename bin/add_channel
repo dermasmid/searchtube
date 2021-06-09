@@ -4,4 +4,5 @@ import sys
 
 
 if __name__ == '__main__':
-    utils.add_channel(sys.argv[1])
+    # 1 = channel_id, 2 = channel_name
+    utils.add_channel(sys.argv[1], sys.argv[2])

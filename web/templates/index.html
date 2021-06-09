@@ -9,7 +9,10 @@
     <link rel="icon" type="image/png" href="static/images/favicon.jpg">
     <link rel="stylesheet" href='static/css/index.css'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Courier Prime">
-
+    <link rel="stylesheet" href="static/css/nice-select.css">
+    <script src="static/js/jquery-3.6.0.min.js"></script> 
+    <script src="static/js/jquery.nice-select.min.js"></script>
+    <script src="static/js/index.js"></script>
 
 </head>
 
@@ -20,10 +23,15 @@
 
     </div>
         <div class="search-container">
-            <form id="search-form" role="search">
-                <label for="search">Search for stuff</label>
-                <input id="search" type="search" placeholder="Search..." autofocus required autocomplete="off" />
-                <button id="search-button" type="submit">Go</button>
+            <form class="search-form" id="search-form" role="search">
+                <input class="search" id="search" type="search" placeholder="Search..." autofocus required autocomplete="off" />
+                {% if channels|length > 1 %}
+                <select id="channel-select">
+                    {% for channel in channels %}
+                    <option value="{{ channel.channel_id }}">{{ channel.channel_name }}</option>
+                    {% endfor %}
+                </select>
+                {%- endif %}
             </form>
         </div>
         <div class="menu", id="menu"></div>
@@ -31,7 +39,6 @@
 
         </div>
     </div>
-    <script src="static/js/index.js"></script>
     <p class="me">Made by <a href="https://github.com/dermasmid" target="_blank">Cheskel</a>, a Lew Later fan.</p>
 </body>
 
