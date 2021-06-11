@@ -23,10 +23,14 @@ def hello():
 @limiter.limit('15/minute')
 def search():
     q = request.args.get('q')
-    # check if exsits
     channel_id = request.args.get('channel_id')
+
     if channel_id == '0':
-        channel_id = gotube.utils.get_channels()[0]['channel_id']
+        try:
+            channel_id = gotube.utils.get_channels()[0]['channel_id']
+        except IndexError:
+            # there's no channels added
+            channel_id = ''
     if gotube.utils.channel_is_in_db(channel_id):
         try:
             results = gotube.search.search(channel_id, q)
@@ -34,4 +38,4 @@ def search():
             results = []
         return {'data': results}
     else:
-        return {}
+        return {'data': []}
