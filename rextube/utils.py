@@ -29,7 +29,9 @@ def add_to_ignore(channel_id: str, video_id: str) -> None:
 
 def add_channel(channel_id: str, name: str) -> None:
     prefix = '/var/www/rextube/data'
-    os.mkdir(f'{prefix}/{channel_id}/')
+    if not os.path.exists(f'{prefix}/{channel_id}/'):
+        os.mkdir(f'{prefix}/{channel_id}/')
+
     if not os.path.exists(f'{prefix}/{channel_id}/map.json'):
         with open(f'{prefix}/{channel_id}/map.json', 'w') as f:
             f.write('{}')
