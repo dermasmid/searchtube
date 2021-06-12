@@ -16,7 +16,7 @@ nano .env
 make build
 ```
 
-To add ssl:
+To add ssl run inside the container (make shell):
 `certbot --apache -d yourdomain.com`
 
 # Adding a channel
