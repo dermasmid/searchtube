@@ -16,6 +16,6 @@ RUN python3 -m get_chromedriver
 RUN mv chromedriver /usr/bin/
 
 
-RUN a2ensite gotube
+RUN a2ensite rextube
 
 CMD ["entrypiont.sh"]

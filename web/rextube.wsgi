@@ -1,6 +1,6 @@
 #!/bin/python3
 import sys
-sys.path.append('/var/www/gotube/web')
+sys.path.append('/var/www/rextube/web')
 from dotenv import load_dotenv
 load_dotenv()
 

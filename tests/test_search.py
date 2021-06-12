@@ -1,4 +1,4 @@
-from gotube import search
+from rextube import search
 
 q = input("enter q: ")
 

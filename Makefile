@@ -1,15 +1,13 @@
-include .env
-
 default: up
 
 up:
 	docker-compose up -d --remove-orphans
 
 shell:
-	docker exec -ti -e COLUMNS=$(shell tput cols) -e LINES=$(shell tput lines) ${PROJECT_NAME}_wsgi bash
+	docker exec -ti -e COLUMNS=$(shell tput cols) -e LINES=$(shell tput lines) rextube_wsgi bash
 
 logs:
-	docker logs ${PROJECT_NAME}_wsgi -f
+	docker logs rextube_wsgi -f
 
 stop:
 	docker-compose stop

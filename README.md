@@ -1,7 +1,7 @@
 # Installation
 
 ```bash
-git clone && cd gotube
+git clone && cd rextube
 ./setup.sh
 cp .example.env .env
 nano .env

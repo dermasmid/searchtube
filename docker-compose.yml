@@ -4,11 +4,11 @@ version: "3.7"
 services:
     wsgi:
         build: ./
-        container_name: "${PROJECT_NAME}_wsgi"
+        container_name: "rextube_wsgi"
         volumes:
-            - ./web:/var/www/gotube/web
-            - ./.data/channels:/var/www/gotube/data
-            - ./gotube:/usr/local/lib/python3.7/site-packages/gotube
+            - ./web:/var/www/rextube/web
+            - ./.data/channels:/var/www/rextube/data
+            - ./rextube:/usr/local/lib/python3.7/site-packages/rextube
             - ./tests:/tests
         ports:
             - "80:80"
@@ -18,7 +18,7 @@ services:
 
     mongo:
         image: mongo
-        container_name: "${PROJECT_NAME}_mongo"
+        container_name: "rextube_mongo"
         environment:
             MONGO_INITDB_ROOT_USERNAME: $DB_USERNAME
             MONGO_INITDB_ROOT_PASSWORD: $DB_PASSWORD

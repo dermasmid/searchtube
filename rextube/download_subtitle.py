@@ -5,7 +5,7 @@ from . import utils
 
 
 def download(channel_id, video_id):
-    prefix = '/var/www/gotube/data'
+    prefix = '/var/www/rextube/data'
     subtitle_path = f'{prefix}/{channel_id}/{video_id}.en.vtt'
     output_path = f'{prefix}/{channel_id}/{video_id}'
     map_file = f'{prefix}/{channel_id}/map.json'

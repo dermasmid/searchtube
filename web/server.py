@@ -1,10 +1,10 @@
 #!/bin/python3
 from flask import Flask, request, render_template
-import gotube
+import rextube
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-app = Flask(__name__, static_url_path='/var/www/gotube/web')
+app = Flask(__name__)
 
 limiter = Limiter(
     app,
@@ -15,7 +15,7 @@ limiter = Limiter(
 
 @app.route('/')
 def hello():
-    channels = gotube.utils.get_channels()
+    channels = rextube.utils.get_channels()
     return render_template('index.html', channels= channels)
 
 
@@ -27,13 +27,13 @@ def search():
 
     if channel_id == '0':
         try:
-            channel_id = gotube.utils.get_channels()[0]['channel_id']
+            channel_id = rextube.utils.get_channels()[0]['channel_id']
         except IndexError:
             # there's no channels added
             channel_id = ''
-    if gotube.utils.channel_is_in_db(channel_id):
+    if rextube.utils.channel_is_in_db(channel_id):
         try:
-            results = gotube.search.search(channel_id, q)
+            results = rextube.search.search(channel_id, q)
         except:
             results = []
         return {'data': results}

@@ -28,21 +28,21 @@ def add_to_ignore(channel_id: str, video_id: str) -> None:
 
 def add_channel(channel_id: str, name: str) -> None:
     client = db.get_client()
-    database = client.get_database('gotube')
+    database = client.get_database('rextube')
     channels_coll = database.get_collection('channels')
     if not channels_coll.find_one({"channel_id": channel_id}):
         channels_coll.insert_one({"channel_id": channel_id, "channel_name": name})
 
 def channel_is_in_db(channel_id: str):
     client = db.get_client()
-    database = client.get_database('gotube')
+    database = client.get_database('rextube')
     channels_coll = database.get_collection('channels')
     return bool(channels_coll.find_one({"channel_id": channel_id}))
 
 
 def get_channels() -> list:
     client = db.get_client()
-    database = client.get_database('gotube')
+    database = client.get_database('rextube')
     channels_coll = database.get_collection('channels')
     return list(channels_coll.find())
 
