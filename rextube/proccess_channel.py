@@ -1,5 +1,6 @@
 import webvtt
 import get_channel
+import time
 from . import db, utils, download_subtitle
 
 
@@ -12,6 +13,7 @@ def proccess(channel_id):
             data = download_subtitle.download(channel_id, video_id)
             if data:
                 save(channel_id, data['path'], data['date'], video_id)
+            time.sleep(5*60)
 
 
 
