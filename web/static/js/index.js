@@ -42,6 +42,7 @@ function onSearch() {
 
 function displayInfo() {
     const menu = document.getElementById('menu')
+    menu.style.display = 'block'
     const num = document.createElement('p')
     num.className = 'number-of-results'
     num.innerHTML = `Total results: ${data.length} | Query: ${searchTerm}`
