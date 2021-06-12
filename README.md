@@ -9,12 +9,15 @@ I know that UI is not pretty, I"m not soo good at those stuff, so if you are - p
 # Installation
 
 ```bash
-git clone && cd rextube
+git clone https://github.com/dermasmid/rextube.git && cd rextube
 ./setup.sh
 cp .example.env .env
 nano .env
 make build
 ```
+
+To add ssl:
+`certbot --apache -d yourdomain.com`
 
 # Adding a channel
 
