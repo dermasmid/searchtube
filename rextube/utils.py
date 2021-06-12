@@ -31,7 +31,9 @@ def add_channel(channel_id: str, name: str) -> None:
     prefix = '/var/www/rextube/data'
     os.mkdir(f'{prefix}/{channel_id}/')
     if not os.path.exists(f'{prefix}/{channel_id}/map.json'):
-        open(f'{prefix}/{channel_id}/map.json', 'w').close()
+        with open(f'{prefix}/{channel_id}/map.json', 'w') as f:
+            f.write('{}')
+
     client = db.get_client()
     database = client.get_database('rextube')
     channels_coll = database.get_collection('channels')
