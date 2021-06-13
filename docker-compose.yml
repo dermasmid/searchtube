@@ -10,11 +10,12 @@ services:
             - ./.data/channels:/var/www/searchtube/data
             - ./searchtube:/usr/local/lib/python3.7/site-packages/searchtube
             - ./tests:/tests
+            - /var/log/apache2/:/var/log/apache2/
         ports:
             - "80:80"
             - "443:443"
         env_file:
-                - .env
+            - .env
 
     mongo:
         image: mongo
