@@ -10,10 +10,11 @@ def proccess(channel_id):
     for video in videos:
         video_id = video['video_url'].split('v=')[1]
         if video_is_new(channel_id, video_id):
-            data = download_subtitle.download(channel_id, video_id)
+            data, new_download = download_subtitle.download(channel_id, video_id)
             if data:
                 save(channel_id, data['path'], data['date'], video_id)
-                time.sleep(5 * 60)
+                if new_download:
+                    time.sleep(60)
 
 
 
