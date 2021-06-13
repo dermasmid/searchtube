@@ -5,7 +5,7 @@ from . import utils
 
 
 def download(channel_id, video_id):
-    prefix = '/var/www/rextube/data'
+    prefix = '/var/www/searchtube/data'
     subtitle_path = f'{prefix}/{channel_id}/{video_id}.en.vtt'
     output_path = f'{prefix}/{channel_id}/{video_id}'
     map_file = f'{prefix}/{channel_id}/map.json'
@@ -19,6 +19,8 @@ def download(channel_id, video_id):
             'writeautomaticsub': True,
             'outtmpl': output_path,
             'skip_download': True,
+            'writesubtitles': True,
+            'subtitlesformat': 'vtt'
         }
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:

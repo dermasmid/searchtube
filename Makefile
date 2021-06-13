@@ -4,10 +4,10 @@ up:
 	docker-compose up -d --remove-orphans
 
 shell:
-	docker exec -ti -e COLUMNS=$(shell tput cols) -e LINES=$(shell tput lines) rextube_wsgi bash
+	docker exec -ti -e COLUMNS=$(shell tput cols) -e LINES=$(shell tput lines) searchtube_wsgi bash
 
 logs:
-	docker logs rextube_wsgi -f
+	docker logs searchtube_wsgi -f
 
 stop:
 	docker-compose stop
