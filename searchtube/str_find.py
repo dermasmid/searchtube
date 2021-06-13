@@ -22,9 +22,10 @@ def split_find(heystack: str, needle: str):
     needle_space_len = needle.count(' ')
     needle_word_len = len(needle.split(' '))
     data = heystack.split(needle)
+    data_len = len(data)
     for i, result in enumerate(data):
         global_index += result.count(' ')
-        if (not result.endswith(' ') and result) or not data[i + 1].startswith(' '):
+        if (not result.endswith(' ') and result) or (not data_len == i + 1 and not data[i + 1].startswith(' ')):
             continue
         results.append(list(range(global_index, global_index + needle_word_len)))
         global_index += needle_space_len
