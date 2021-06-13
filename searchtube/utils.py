@@ -28,7 +28,7 @@ def add_to_ignore(channel_id: str, video_id: str) -> None:
 
 
 def add_channel(channel_id: str, name: str) -> None:
-    prefix = '/var/www/rextube/data'
+    prefix = '/var/www/searchtube/data'
     if not os.path.exists(f'{prefix}/{channel_id}/'):
         os.mkdir(f'{prefix}/{channel_id}/')
 
@@ -37,21 +37,21 @@ def add_channel(channel_id: str, name: str) -> None:
             f.write('{}')
 
     client = db.get_client()
-    database = client.get_database('rextube')
+    database = client.get_database('searchtube')
     channels_coll = database.get_collection('channels')
     if not channels_coll.find_one({"channel_id": channel_id}):
         channels_coll.insert_one({"channel_id": channel_id, "channel_name": name})
 
 def channel_is_in_db(channel_id: str):
     client = db.get_client()
-    database = client.get_database('rextube')
+    database = client.get_database('searchtube')
     channels_coll = database.get_collection('channels')
     return bool(channels_coll.find_one({"channel_id": channel_id}))
 
 
 def get_channels() -> list:
     client = db.get_client()
-    database = client.get_database('rextube')
+    database = client.get_database('searchtube')
     channels_coll = database.get_collection('channels')
     return list(channels_coll.find())
 

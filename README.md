@@ -2,14 +2,14 @@
 You can use this project to make any youtube channle searchable.
 Follow the instuctions bellow, and if you bump in to any issue, please open an issue.
 
-You can see the site live [here](https://rextube.app/)
+You can see the site live [here](https://searchtube.app/)
 
 I know that UI is not pretty, I"m not soo good at those stuff, so if you are - please consider contibuting, thanks.
 
 # Installation
 
 ```bash
-git clone https://github.com/dermasmid/rextube.git && cd rextube
+git clone https://github.com/dermasmid/searchtube.git && cd searchtube
 ./setup.sh
 cp .example.env .env
 nano .env
