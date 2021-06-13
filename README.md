@@ -1,5 +1,5 @@
 # Overview
-You can use this project to make any youtube channle searchable.
+You can use this project to make any youtube channel searchable.
 Follow the instuctions bellow, and if you bump in to any issue, please open an issue.
 
 You can see the site live [here](https://searchtube.site)
