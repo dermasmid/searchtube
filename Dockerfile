@@ -7,19 +7,15 @@ RUN apt-get update && apt-get install -y \
     libapache2-mod-wsgi-py3 \
     python3-certbot-apache \
     ./google-chrome*.deb \
-    xvfb \
     && rm google-chrome*.deb
 
 COPY requirements.txt .env  /
 COPY bin/* /usr/local/sbin/
 
-RUN apache-setup.sh
 
 RUN pip3 install -r requirements.txt
 RUN python3 -m get_chromedriver
 RUN mv chromedriver /usr/bin/
 
-
-RUN a2ensite searchtube
 
 CMD ["entrypiont.sh"]
