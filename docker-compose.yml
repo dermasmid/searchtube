@@ -11,8 +11,8 @@ services:
             - ./searchtube:/usr/local/lib/python3.7/site-packages/searchtube
             - ./tests:/tests
             - /var/log/apache2/:/var/log/apache2/
-            - ./etc/apache2/sites-available:/etc/apache2/sites-available/
-            - ./etc/letsencrypt/live/:/etc/letsencrypt/live/
+            - ./etc/apache2/sites-available/:/etc/apache2/sites-available/
+            - ./etc/letsencrypt/:/etc/letsencrypt/
         ports:
             - "80:80"
             - "443:443"
