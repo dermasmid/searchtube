@@ -9,10 +9,11 @@ services:
             - ./web:/var/www/searchtube/web
             - ./.data/channels:/var/www/searchtube/data
             - ./searchtube:/usr/local/lib/python3.7/site-packages/searchtube
-            - ./tests:/tests
             - /var/log/apache2/:/var/log/apache2/
             - ./etc/apache2/sites-available/:/etc/apache2/sites-available/
             - ./etc/letsencrypt/:/etc/letsencrypt/
+            # uncomment to mount test scripts in container
+            # - ./tests:/tests 
         ports:
             - "80:80"
             - "443:443"
@@ -28,4 +29,5 @@ services:
         volumes:
             - ./.data/db:/data/db:delegated
         ports:
-            - "27017:27017"
+            # uncomment if you want mongobd to be accessible outside of docker
+            # - "27017:27017"
