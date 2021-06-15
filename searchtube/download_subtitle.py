@@ -2,6 +2,7 @@ import youtube_dl
 import os
 import json
 import requests
+import time
 from . import utils
 
 
@@ -9,7 +10,7 @@ def download(channel_id: str, video_id: str) -> dict:
     prefix = '/var/www/searchtube/data'
     subtitle_path = f'{prefix}/{channel_id}/{video_id}.en.vtt'
     map_file = f'{prefix}/{channel_id}/map.json'
-    new_download = False
+
 
     with open(map_file, 'r') as f:
         map_data = json.load(f)
@@ -22,13 +23,14 @@ def download(channel_id: str, video_id: str) -> dict:
 
         with youtube_dl.YoutubeDL(youtube_dl_options) as ydl:
             raw_video_info = ydl.extract_info(video_id)
+            time.sleep(os.environ['DOWNLOAD_SLEEP_TIME'])
 
         date = utils.date_to_epoch(raw_video_info['upload_date'])
         subtitle_data = get_english_subtitles(raw_video_info)
         if subtitle_data:
             download_subtitle(subtitle_data, subtitle_path)
             map_data[video_id] = {'path': subtitle_path, 'date': date}
-            new_download = True
+
 
         elif utils.is_two_weeks_old(date):
             utils.add_to_ignore(channel_id, video_id)
@@ -37,7 +39,7 @@ def download(channel_id: str, video_id: str) -> dict:
     with open(map_file, 'w') as f:
         json.dump(map_data, f)
 
-    return map_data.get(video_id), new_download
+    return map_data.get(video_id)
 
 
 
