@@ -3,6 +3,7 @@ FROM python:3.7-buster
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -q
 
 RUN apt-get update && apt-get install -y \
+    apt-utils \
     apache2 \
     libapache2-mod-wsgi-py3 \
     python3-certbot-apache \
