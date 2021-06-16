@@ -28,6 +28,7 @@ services:
             MONGO_INITDB_ROOT_PASSWORD: $DB_PASSWORD
         volumes:
             - ./.data/db:/data/db:delegated
-        ports:
-            # uncomment if you want mongobd to be accessible outside of docker
-            # - "27017:27017"
+
+        # uncomment if you want mongobd to be accessible outside of docker
+        # ports:
+        #     - "27017:27017"
