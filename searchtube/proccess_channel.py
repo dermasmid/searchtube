@@ -1,19 +1,19 @@
 import webvtt
-import get_channel
 from . import db, utils, download_subtitle
 
 
 
 def proccess(channel_id):
-    videos = get_videos(channel_id)
+    is_new = channel_is_new(channel_id)
+    videos = download_subtitle.get_videos(channel_id, is_new)
     for video in videos:
-        video_id = video['video_url'].split('v=')[1]
+        video_id = video['id']
         if video_is_new(channel_id, video_id):
-            data = download_subtitle.download(channel_id, video_id)
+            data = download_subtitle.download(video)
             if data:
                 save(channel_id, data['path'], data['date'], video_id)
-
-
+    if is_new:
+        set_channel_to_old(channel_id)
 
 
 
@@ -58,8 +58,15 @@ def video_is_new(channel_id, video_id):
     return video_id not in list(database.list_collection_names()) and not ignore
 
 
+def channel_is_new(channel_id):
+    client = db.get_client()
+    database = client.get_database('searchtube')
+    channels_coll = database.get_collection('channels')
+    return bool(channels_coll.find_one({"channel_id": channel_id, "is_new": True}))
 
-def get_videos(channel_id):
-    getter = get_channel.ListCreator(headless= True, driver= 'chrome', scroll_pause_time= 1, cookie_consent= True)
-    data = getter.create_list_for(f'https://www.youtube.com/channel/{channel_id}', channel_id)
-    return data
+
+def set_channel_to_old(channel_id):
+    client = db.get_client()
+    database = client.get_database('searchtube')
+    channels_coll = database.get_collection('channels')
+    return channels_coll.update_one({"channel_id": channel_id}, {"is_new": False})
