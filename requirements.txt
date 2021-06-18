@@ -2,9 +2,6 @@ flask
 flask_limiter
 pymongo
 python-dotenv
-selenium
-get_chromedriver
 youtube_dl
 requests
 webvtt-py
-https://github.com/dermasmid/youtube-get-channel/raw/master/dist/get_channel-2.0.0-py3-none-any.whl

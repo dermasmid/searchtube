@@ -1,45 +1,61 @@
 import youtube_dl
+from youtube_dl.extractor.common import InfoExtractor
+import random
 import os
-import json
 import requests
 import time
 from . import utils
 
+# Add sleep, youtube-dl only sleeps when it downloads something, we don't
+def report_download_webpage_decorator(report_download_webpage_orig):
+    def report_download_webpage(self, video_id):
+        report_download_webpage_orig(self, video_id)
+        sleep_interval = random.uniform(40, 60)
+        print("Sleeping for %s" % sleep_interval)
+        time.sleep(sleep_interval)
 
-def download(channel_id: str, video_id: str) -> dict:
-    prefix = '/var/www/searchtube/data'
-    subtitle_path = f'{prefix}/{channel_id}/{video_id}.en.vtt'
-    map_file = f'{prefix}/{channel_id}/map.json'
+    return report_download_webpage
+
+InfoExtractor.report_download_webpage = report_download_webpage_decorator(InfoExtractor.report_download_webpage)
 
 
-    with open(map_file, 'r') as f:
-        map_data = json.load(f)
+def get_videos(channel_id: str, channel_is_new: bool):
 
-    if not os.path.exists(subtitle_path) or not video_id in map_data:
+    youtube_dl_options = {
+        'skip_download': True,
+        'ignoreerrors': True
+    }
 
-        youtube_dl_options = {
-            'skip_download': True,
-        }
+    if not channel_is_new:
+        # this does still hit all the videos
+        # youtube_dl_options['dateafter'] = 'now-1week'
+        youtube_dl_options['playlistend'] = 10
 
-        with youtube_dl.YoutubeDL(youtube_dl_options) as ydl:
-            raw_video_info = ydl.extract_info(video_id)
-            time.sleep(os.environ['DOWNLOAD_SLEEP_TIME'])
+    with youtube_dl.YoutubeDL(youtube_dl_options) as ydl:
+        raw_videos_info = ydl.extract_info(f'https://www.youtube.com/channel/{channel_id}/videos')
 
-        date = utils.date_to_epoch(raw_video_info['upload_date'])
-        subtitle_data = get_english_subtitles(raw_video_info)
+    return raw_videos_info.get('entries')
+
+
+def download(channel_id: str, video_data: dict) -> dict:
+    video_id = video_data['id']
+    subtitle_path = f'/var/www/searchtube/data/{channel_id}/{video_id}.en.vtt'
+
+    if not os.path.exists(subtitle_path):
+        date = utils.date_to_epoch(video_data['upload_date'])
+        subtitle_data = get_english_subtitles(video_data)
+
         if subtitle_data:
+            print('Downloading subtitles for ' + video_id)
             download_subtitle(subtitle_data, subtitle_path)
-            map_data[video_id] = {'path': subtitle_path, 'date': date}
-
+            print('Sleeping')
+            time.sleep(int(os.environ['DOWNLOAD_SLEEP_TIME']))
+            return {'path': subtitle_path, 'date': date}
 
         elif utils.is_two_weeks_old(date):
             utils.add_to_ignore(channel_id, video_id)
+            return None
 
-
-    with open(map_file, 'w') as f:
-        json.dump(map_data, f)
-
-    return map_data.get(video_id)
 
 
 

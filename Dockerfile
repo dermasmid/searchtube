@@ -1,22 +1,18 @@
 FROM python:3.7-buster
 
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -q
 
 RUN apt-get update && apt-get install -y \
     apt-utils \
     apache2 \
     libapache2-mod-wsgi-py3 \
-    python3-certbot-apache \
-    ./google-chrome*.deb \
-    && rm google-chrome*.deb
+    python3-certbot-apache
 
 COPY requirements.txt .env  /
 COPY bin/* /usr/local/sbin/
 
 
 RUN pip3 install -r requirements.txt
-RUN python3 -m get_chromedriver
-RUN mv chromedriver /usr/bin/
+
 
 
 CMD ["entrypiont.sh"]

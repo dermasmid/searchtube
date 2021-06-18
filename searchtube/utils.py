@@ -40,7 +40,7 @@ def add_channel(channel_id: str, name: str) -> None:
     database = client.get_database('searchtube')
     channels_coll = database.get_collection('channels')
     if not channels_coll.find_one({"channel_id": channel_id}):
-        channels_coll.insert_one({"channel_id": channel_id, "channel_name": name})
+        channels_coll.insert_one({"channel_id": channel_id, "channel_name": name, "is_new": True})
 
 def channel_is_in_db(channel_id: str):
     client = db.get_client()
