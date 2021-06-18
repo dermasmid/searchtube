@@ -2,7 +2,6 @@ flask
 flask_limiter
 pymongo
 python-dotenv
-selenium
 youtube_dl
 requests
 webvtt-py
