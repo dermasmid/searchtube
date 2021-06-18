@@ -1,8 +1,23 @@
 import youtube_dl
+from youtube_dl.extractor.common import InfoExtractor
+import random
 import os
 import requests
 import time
 from . import utils
+
+# Add sleep, youtube-dl only sleeps when it downloads something, we don't
+def report_download_webpage_decorator(report_download_webpage_orig):
+    print('hi')
+    def report_download_webpage(self, video_id):
+        report_download_webpage_orig(self, video_id)
+        sleep_interval = random.uniform(40, 60)
+        print("Sleeping for %s" % sleep_interval)
+        time.sleep(sleep_interval)
+
+    return report_download_webpage
+
+InfoExtractor.report_download_webpage = report_download_webpage_decorator(InfoExtractor.report_download_webpage)
 
 
 def get_videos(channel_id: str, channel_is_new: bool):
