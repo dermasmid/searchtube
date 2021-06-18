@@ -6,6 +6,8 @@ if [ ! -f  /etc/apache2/sites-available/searchtube.conf ]; then
 fi
 
 a2enmod rewrite
+a2enmod ssl
+a2enmod socache_shmcb
 a2ensite searchtube
 a2ensite searchtube-le-ssl
 
