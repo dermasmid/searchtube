@@ -9,7 +9,7 @@ def proccess(channel_id):
     for video in videos:
         video_id = video['id']
         if video_is_new(channel_id, video_id):
-            data = download_subtitle.download(video)
+            data = download_subtitle.download(channel_id, video)
             if data:
                 save(channel_id, data['path'], data['date'], video_id)
     if is_new:

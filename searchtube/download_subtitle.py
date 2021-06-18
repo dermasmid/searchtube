@@ -23,8 +23,7 @@ def get_videos(channel_id: str, channel_is_new: bool):
     return raw_videos_info.get('entries')
 
 
-def download(video_data: dict) -> dict:
-    channel_id = video_data['uploader_id']
+def download(channel_id: str, video_data: dict) -> dict:
     video_id = video_data['id']
     subtitle_path = f'/var/www/searchtube/data/{channel_id}/{video_id}.en.vtt'
 
@@ -33,7 +32,9 @@ def download(video_data: dict) -> dict:
         subtitle_data = get_english_subtitles(video_data)
 
         if subtitle_data:
+            print('Downloading subtitles for ' + video_id)
             download_subtitle(subtitle_data, subtitle_path)
+            print('Sleeping')
             time.sleep(int(os.environ['DOWNLOAD_SLEEP_TIME']))
             return {'path': subtitle_path, 'date': date}
 
