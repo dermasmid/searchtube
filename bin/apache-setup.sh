@@ -19,7 +19,6 @@ cat << EOF > /etc/apache2/sites-available/searchtube.conf
         ErrorLog /var/log/apache2/error.log
         LogLevel warn
         CustomLog /var/log/apache2/access.log combined
-        SetEnv DB_HOST $DB_HOST
         SetEnv DB_USERNAME $DB_USERNAME
         SetEnv DB_PASSWORD $DB_PASSWORD
 </VirtualHost>
