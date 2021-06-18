@@ -26,7 +26,7 @@ def get_videos(channel_id: str, channel_is_new: bool):
 def download(video_data: dict) -> dict:
     channel_id = video_data['uploader_id']
     video_id = video_data['id']
-    subtitle_path = f'/var/www/searchtube/data/{channel_id}/{video_id}.vtt'
+    subtitle_path = f'/var/www/searchtube/data/{channel_id}/{video_id}.en.vtt'
 
     if not os.path.exists(subtitle_path):
         date = utils.date_to_epoch(video_data['upload_date'])
