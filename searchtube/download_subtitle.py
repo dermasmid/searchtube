@@ -8,7 +8,6 @@ from . import utils
 
 # Add sleep, youtube-dl only sleeps when it downloads something, we don't
 def report_download_webpage_decorator(report_download_webpage_orig):
-    print('hi')
     def report_download_webpage(self, video_id):
         report_download_webpage_orig(self, video_id)
         sleep_interval = random.uniform(40, 60)
