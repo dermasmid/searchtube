@@ -1,5 +1,7 @@
 import youtube_dl
 from youtube_dl.extractor.common import InfoExtractor
+from youtube_dl.utils import std_headers
+import webvtt
 import random
 import os
 import requests
@@ -48,8 +50,10 @@ def download(channel_id: str, video_data: dict) -> dict:
         if subtitle_data:
             print('Downloading subtitles for ' + video_id)
             download_subtitle(subtitle_data, subtitle_path)
-            print('Sleeping')
-            time.sleep(int(os.environ['DOWNLOAD_SLEEP_TIME']))
+            if bool(int(os.environ['SLEEP_AFTER_DOWNLOAD'])):
+                print('Sleeping')
+                sleep_interval = random.uniform(30, 60)
+                time.sleep(sleep_interval)
             return {'path': subtitle_path, 'date': date}
 
         elif utils.is_two_weeks_old(date):
@@ -76,7 +80,19 @@ def get_english_subtitles(raw_video_info: dict) -> dict:
 def download_subtitle(subtitle_data: dict, output_path: str) -> str:
     url = list(i['url'] for i in subtitle_data if i['ext'] == 'vtt')[0]
 
-    with open(output_path, 'wb') as f:
-        f.write(requests.get(url).content)
+    success = False
+
+    while not success:
+        with open(output_path, 'wb') as f:
+            f.write(requests.get(url, headers= std_headers).content)
+
+        try:
+            webvtt.read(output_path)
+            success = True
+        except webvtt.errors.MalformedCaptionError:
+            sleep_interval = random.uniform(30 * 60, 45 * 60)
+            print(f'Got reject from youtube, going to sleep for {int(sleep_interval // 60)} minutes')
+            time.sleep(sleep_interval)
+            continue
 
     return output_path
