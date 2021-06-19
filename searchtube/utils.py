@@ -1,5 +1,6 @@
 import datetime
 import os
+import string
 from . import db
 
 
@@ -55,6 +56,7 @@ def get_channels() -> list:
     channels_coll = database.get_collection('channels')
     return list(channels_coll.find())
 
+
 def clean_vtt(data) -> list:
     results = []
     last_lines = []
@@ -68,3 +70,12 @@ def clean_vtt(data) -> list:
             results.append(caption)
 
     return results
+
+
+def clean_text(text):
+    words = text.split()
+    custom_punctuation = string.punctuation.replace("'", '').replace('-', '')
+    table = str.maketrans('', '', custom_punctuation)
+    stripped_text = list(w.translate(table) for w in words)
+    cleaned_text = ' '.join(word.lower() for word in stripped_text)
+    return cleaned_text

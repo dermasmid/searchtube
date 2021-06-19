@@ -27,10 +27,11 @@ def save(channel_id, path, date, video_id):
     all_words = ''
     word_index = 0
     for caption in utils.clean_vtt(lines):
+        text = utils.clean_text(caption.text)
         start = utils.timestamp_to_secs(caption.start) - 1
         end = utils.timestamp_to_secs(caption.end) + 1
-        all_words += " " + caption.text
-        words_len = len(caption.text.split(' '))
+        all_words += " " + text
+        words_len = len(text.split(' '))
         indexes = list(range(word_index, word_index + words_len))
         data = {
             'start': start,
