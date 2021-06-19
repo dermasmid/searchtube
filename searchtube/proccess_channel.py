@@ -69,4 +69,4 @@ def set_channel_to_old(channel_id):
     client = db.get_client()
     database = client.get_database('searchtube')
     channels_coll = database.get_collection('channels')
-    return channels_coll.update_one({"channel_id": channel_id}, {"is_new": False})
+    return channels_coll.update_one({"channel_id": channel_id}, {"$set": {"is_new": False}})
