@@ -1,47 +1,29 @@
-import youtube_dl
-from youtube_dl.extractor.common import InfoExtractor
-from youtube_dl.utils import std_headers
+from typing import Generator
+from youtube_dl import std_headers, YoutubeDL
 import webvtt
 import random
 import os
 import requests
 import time
+import list_youtube_channel
 from . import utils
 
-# Add sleep, youtube-dl only sleeps when it downloads something, we don't
-def report_download_webpage_decorator(report_download_webpage_orig):
-    def report_download_webpage(self, video_id):
-        report_download_webpage_orig(self, video_id)
-        sleep_interval = random.uniform(40, 60)
-        print("Sleeping for %s" % sleep_interval)
-        time.sleep(sleep_interval)
-
-    return report_download_webpage
-
-InfoExtractor.report_download_webpage = report_download_webpage_decorator(InfoExtractor.report_download_webpage)
 
 
-def get_videos(channel_id: str, channel_is_new: bool):
+def get_videos(channel_id: str, channel_is_new: bool) -> Generator:
+    limit = 20 if channel_is_new else None
+    videos = list_youtube_channel.get_channel(channel_id, limit = limit)
+    return videos
+
+
+def download(channel_id: str, video_id: str) -> dict:
+    subtitle_path = f'/var/www/searchtube/data/{channel_id}/{video_id}.en.vtt'
 
     youtube_dl_options = {
         'skip_download': True,
-        'ignoreerrors': True
     }
-
-    if not channel_is_new:
-        # this does still hit all the videos
-        # youtube_dl_options['dateafter'] = 'now-1week'
-        youtube_dl_options['playlistend'] = 10
-
-    with youtube_dl.YoutubeDL(youtube_dl_options) as ydl:
-        raw_videos_info = ydl.extract_info(f'https://www.youtube.com/channel/{channel_id}/videos')
-
-    return raw_videos_info.get('entries')
-
-
-def download(channel_id: str, video_data: dict) -> dict:
-    video_id = video_data['id']
-    subtitle_path = f'/var/www/searchtube/data/{channel_id}/{video_id}.en.vtt'
+    with YoutubeDL(youtube_dl_options) as ydl:
+        video_data = ydl.extract_info(video_id)
 
     if not os.path.exists(subtitle_path):
         date = utils.date_to_epoch(video_data['upload_date'])
@@ -59,7 +41,6 @@ def download(channel_id: str, video_data: dict) -> dict:
         elif utils.is_two_weeks_old(date):
             utils.add_to_ignore(channel_id, video_id)
             return None
-
 
 
 
