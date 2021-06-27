@@ -6,7 +6,7 @@ def search(channel_id: str, q: str):
     client = db.get_client()
     database = client.get_database(channel_id)
     full_coll = database.get_collection('full_text')
-    vague_results = full_coll.find({'data': {'$regex': rf'\b{q}\s'}})
+    vague_results = full_coll.find({'data': {'$regex': rf'\b{q}\s'}}).sort('date', -1)
     for video in vague_results:
         video_id = video['video_id']
         video_coll = database.get_collection(video_id)
