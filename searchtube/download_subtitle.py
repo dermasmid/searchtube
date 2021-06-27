@@ -11,21 +11,21 @@ from . import utils
 
 
 def get_videos(channel_id: str, channel_is_new: bool) -> Generator:
-    limit = 20 if channel_is_new else None
+    limit = 20 if not channel_is_new else None
     videos = list_youtube_channel.get_channel(channel_id, limit = limit)
     return videos
 
 
 def download(channel_id: str, video_id: str) -> dict:
+    unwanted = False
     subtitle_path = f'/var/www/searchtube/data/{channel_id}/{video_id}.en.vtt'
+    video_data = get_video_info(video_id)
 
-    youtube_dl_options = {
-        'skip_download': True,
-    }
-    with YoutubeDL(youtube_dl_options) as ydl:
-        video_data = ydl.extract_info(video_id)
+    if not video_data:
+        # Might be age restricted
+        unwanted = True
 
-    if not os.path.exists(subtitle_path):
+    if not os.path.exists(subtitle_path) and video_data:
         date = utils.date_to_epoch(video_data['upload_date'])
         subtitle_data = get_english_subtitles(video_data)
 
@@ -39,8 +39,11 @@ def download(channel_id: str, video_id: str) -> dict:
             return {'path': subtitle_path, 'date': date}
 
         elif utils.is_two_weeks_old(date):
-            utils.add_to_ignore(channel_id, video_id)
-            return None
+            unwanted = True
+
+    if unwanted:
+        utils.add_to_ignore(channel_id, video_id)
+        return None
 
 
 
@@ -76,3 +79,13 @@ def download_subtitle(subtitle_data: dict, output_path: str) -> str:
             continue
 
     return output_path
+
+
+def get_video_info(video_id: str) -> dict:
+    youtube_dl_options = {
+        'skip_download': True,
+        'ignoreerrors': True
+    }
+    with YoutubeDL(youtube_dl_options) as ydl:
+        video_data = ydl.extract_info(video_id)
+    return video_data
