@@ -1,16 +1,15 @@
 var index = 0
 var data = []
 var numOfresults = 0
-let searchTerm = ''
 
 
 
-function getData(url, callback) {
+function getData(url, params, callback) {
     onSearch()
     fetch(url).then((resp) => {
         resp.json().then((data) => {
             document.getElementById('loading-png').remove()
-            callback(data)
+            callback(data, params)
         })
     })
 }
@@ -40,12 +39,12 @@ function onSearch() {
     })
 }
 
-function displayInfo() {
+function displayInfo(searchTerm) {
     const menu = document.getElementById('menu')
     menu.style.display = 'block'
     const num = document.createElement('p')
     num.className = 'number-of-results'
-    num.innerHTML = `Total results: ${data.length} | Query: ${searchTerm}`
+    num.innerText = `Total results: ${data.length} | Query: ${searchTerm}`
     menu.appendChild(num)
 }
 
@@ -72,58 +71,58 @@ function addFive() {
     }
 }
 
-function handleData(rawData) {
+function handleData(rawData, params) {
     data = rawData.data
     numOfresults = data.length
-    displayInfo()
+    window.history.pushState({}, '', '/?q=' + params.term + '&channel_id=' + params.channelId);
+    displayInfo(params.term)
     addFive()
 }
 
 
-function get_remix() {
-    data = {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        method: 'POST',
-        body: JSON.stringify(data.slice(0, 4))
-    }
-    console.log(data)
-    fetch('/compress', data).then((resp) => {
-        resp.text().then((data) => {
-            // window.location.href = data
-        })
-    })
-}
-
 function runInit() {
-    if (window.location.href.includes('?q=')) {
-        searchTerm = window.location.href.split('?q=')[1].replace(/%20/g, ' ')
-        getData('/search?q=' + searchTerm.toLowerCase(), handleData)
+    let currentUrl = new URL(window.location.href)
+    let channelId = currentUrl.searchParams.get('channel_id')
+    searchTerm = currentUrl.searchParams.get('q')
+    if (channelId) {
+        let option = $('option[value="' + channelId + '"]').attr('selected', 'selected')
+        $('select').niceSelect('update')
+    }
+    if (searchTerm) {
+        params = getCurrentQuery()
+        params.term = searchTerm
+        let url = '/search?q=' + params.term + '&channel_id=' + params.channelId
+        getData(url, params, handleData)
     }
 }
 
-runInit()
 
-
+function getCurrentQuery() {
+    let q = document.getElementById('search')
+    let searchTerm = q.value;
+    q.value = ''
+    let channel = document.getElementById('channel-select')
+    let channelId
+    if (channel) {
+        channelId = channel.value
+    } else {
+        channelId = 0
+    }
+    let url = '/search?q=' + searchTerm.toLowerCase() + '&channel_id=' + channelId
+    params = {
+        term: searchTerm,
+        channelId: channelId
+    }
+    return params
+}
 
 $(document).ready(function() {
     $('select').niceSelect()
-
     document.getElementById('search-form').addEventListener("submit", (e) => {
         e.preventDefault();
-        let q = document.getElementById('search')
-        searchTerm = q.value;
-        q.value = ''
-        let channel = document.getElementById('channel-select')
-        let channelId
-        if (channel) {
-            channelId = channel.value
-        } else {
-            channelId = 0
-        }
-        getData('/search?q=' + searchTerm.toLowerCase() + '&channel_id=' + channelId, handleData)
+        params = getCurrentQuery()
+        let url = '/search?q=' + params.term + '&channel_id=' + params.channelId
+        getData(url, params, handleData)
     });
-
-
+    runInit()
   });
