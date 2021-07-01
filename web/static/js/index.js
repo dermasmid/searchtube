@@ -108,9 +108,8 @@ function getCurrentQuery() {
     } else {
         channelId = 0
     }
-    let url = '/search?q=' + searchTerm.toLowerCase() + '&channel_id=' + channelId
     params = {
-        term: searchTerm,
+        term: searchTerm.toLowerCase(),
         channelId: channelId
     }
     return params
