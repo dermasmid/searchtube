@@ -59,6 +59,10 @@ body {
 }
 
 .main-container .nice-select .list {
+  font-size: 14px;
+}
+
+.main-container .nice-select .list {
   margin-top: 6px;
 }
 
