@@ -33,17 +33,25 @@ def add_channel(channel_id: str, name: str) -> None:
     if not os.path.exists(f'{prefix}/{channel_id}/'):
         os.mkdir(f'{prefix}/{channel_id}/')
 
-    if not os.path.exists(f'{prefix}/{channel_id}/map.json'):
-        with open(f'{prefix}/{channel_id}/map.json', 'w') as f:
-            f.write('{}')
-
     client = db.get_client()
     database = client.get_database('searchtube')
     channels_coll = database.get_collection('channels')
     if not channels_coll.find_one({"channel_id": channel_id}):
         channels_coll.insert_one({"channel_id": channel_id, "channel_name": name, "is_new": True})
 
-def channel_is_in_db(channel_id: str):
+
+def remove_channel(channel_id: str) -> None:
+    client = db.get_client()
+    channels_database = client.get_database('searchtube')
+    channels_coll = channels_database.get_collection('channels')
+    if channels_coll.find_one({"channel_id": channel_id}):
+        # Delete from config db
+        channels_coll.delete_one({"channel_id": channel_id})
+        # Delete videos data
+        client.drop_database(channel_id)
+
+
+def channel_is_in_db(channel_id: str) -> bool:
     client = db.get_client()
     database = client.get_database('searchtube')
     channels_coll = database.get_collection('channels')
@@ -72,10 +80,13 @@ def clean_vtt(data) -> list:
     return results
 
 
-def clean_text(text):
+def clean_text(text: str) -> str:
     words = text.split()
-    custom_punctuation = string.punctuation.replace("'", '').replace('-', '')
-    table = str.maketrans('', '', custom_punctuation)
-    stripped_text = list(w.translate(table) for w in words)
-    cleaned_text = ' '.join(word.lower() for word in stripped_text)
+    cleaned_text_list = []
+    for word in words:
+        word = word.lower()
+        word = word.strip(string.punctuation)
+        if word:
+            cleaned_text_list.append(word)
+    cleaned_text = ' '.join(cleaned_text_list)
     return cleaned_text

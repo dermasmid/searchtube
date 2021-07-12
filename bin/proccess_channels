@@ -7,4 +7,4 @@ from searchtube import proccess_channel, utils
 for channel in utils.get_channels():
     channel_id = channel['channel_id']
     print(f'Now proccessing {channel_id}')
-    proccess_channel.proccess(channel_id)
+    proccess_channel.process(channel_id)

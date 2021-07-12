@@ -3,7 +3,7 @@ from . import db, utils, download_subtitle
 
 
 
-def proccess(channel_id):
+def process(channel_id):
     is_new = channel_is_new(channel_id)
     videos = download_subtitle.get_videos(channel_id, is_new)
     for video in videos:
@@ -39,7 +39,6 @@ def save(channel_id, path, date, video_id):
             'indexes': indexes
         }
         video_coll.insert_one(data)
-        video_coll.create_index('indexes')
         word_index += words_len
     data = {
         'video_id': video_id,
@@ -48,6 +47,7 @@ def save(channel_id, path, date, video_id):
     }
     full_coll.insert_one(data)
     full_coll.create_index([('data', 'text')])
+    video_coll.create_index('indexes')
 
 
 
@@ -71,3 +71,24 @@ def set_channel_to_old(channel_id):
     database = client.get_database('searchtube')
     channels_coll = database.get_collection('channels')
     return channels_coll.update_one({"channel_id": channel_id}, {"$set": {"is_new": False}})
+
+
+def reprocess_channel(channel_id: str) -> None:
+    client = db.get_client()
+    database = client.get_database(channel_id)
+    full_coll = database.get_collection('full_text')
+    videos = full_coll.find()
+    for video in videos:
+        video_id = video['video_id']
+        print(f'Now reprocessing video: {video_id}')
+        date = video['date']
+        subtitle_path = f'/var/www/searchtube/data/{channel_id}/{video_id}.en.vtt'
+        full_coll.delete_one({'video_id': video_id})
+        database.drop_collection(video_id)
+        save(channel_id, subtitle_path, date, video_id)
+
+
+def reprocess_channels() -> None:
+    for channel in utils.get_channels():
+        print(f'Now reprocessing channel: {channel["channel_id"]}')
+        reprocess_channel(channel['channel_id'])

@@ -1,0 +1,8 @@
+#!/usr/local/bin/python3
+from searchtube import utils
+import sys
+
+
+if __name__ == '__main__':
+    # 1 = channel_id
+    utils.remove_channel(sys.argv[1])
