@@ -49,14 +49,13 @@ def download(channel_id: str, video_id: str) -> dict:
 
 def get_english_subtitles(raw_video_info: dict) -> dict:
     subtitles = {}
-    if raw_video_info.get('automatic_captions', {}).get('en'):
+    english_subtitle = list(i for i in raw_video_info.get('subtitles', []) if 'en' in i)
+
+    if english_subtitle:
+            subtitles = raw_video_info['subtitles'][english_subtitle[0]]
+    elif raw_video_info.get('automatic_captions', {}).get('en'):
         subtitles = raw_video_info['automatic_captions']['en']
     
-    elif raw_video_info.get('subtitles'):
-        english_subtitle = list(i for i in raw_video_info['subtitles'] if 'en' in i)
-        if english_subtitle:
-            subtitles = raw_video_info['subtitles'][english_subtitle[0]]
-
     return subtitles
 
 
