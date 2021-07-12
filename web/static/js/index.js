@@ -85,8 +85,7 @@ function runInit() {
     let channelId = currentUrl.searchParams.get('channel_id')
     searchTerm = currentUrl.searchParams.get('q')
     if (channelId) {
-        let option = $('option[value="' + channelId + '"]').attr('selected', 'selected')
-        $('select').niceSelect('update')
+        $('select').val(channelId).niceSelect('update')
     }
     if (searchTerm) {
         params = getCurrentQuery()
