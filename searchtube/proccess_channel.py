@@ -77,7 +77,7 @@ def reprocess_channel(channel_id: str) -> None:
     client = db.get_client()
     database = client.get_database(channel_id)
     full_coll = database.get_collection('full_text')
-    videos = full_coll.find()
+    videos = list({'video_id': i['video_id'], 'date': i['date']} for i in full_coll.find())
     for video in videos:
         video_id = video['video_id']
         print(f'Now reprocessing video: {video_id}')
