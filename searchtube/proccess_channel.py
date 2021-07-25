@@ -1,9 +1,10 @@
+from pymongo.results import UpdateResult
 import webvtt
 from . import db, utils, download_subtitle
 
 
 
-def process(channel_id):
+def process(channel_id: str) -> None:
     is_new = channel_is_new(channel_id)
     videos = download_subtitle.get_videos(channel_id, is_new)
     for video in videos:
@@ -18,7 +19,7 @@ def process(channel_id):
 
 
 
-def save(channel_id, path, date, video_id):
+def save(channel_id: str, path: str, date: int, video_id: str) -> None:
     client = db.get_client()
     database = client.get_database(channel_id)
     full_coll = database.get_collection('full_text')
@@ -51,7 +52,7 @@ def save(channel_id, path, date, video_id):
 
 
 
-def video_is_new(channel_id, video_id):
+def video_is_new(channel_id: str, video_id: str) -> bool:
     client = db.get_client()
     database = client.get_database(channel_id)
     ignore_coll = database.get_collection('ignore')
@@ -59,14 +60,14 @@ def video_is_new(channel_id, video_id):
     return video_id not in list(database.list_collection_names()) and not ignore
 
 
-def channel_is_new(channel_id):
+def channel_is_new(channel_id: str) -> bool:
     client = db.get_client()
     database = client.get_database('searchtube')
     channels_coll = database.get_collection('channels')
     return bool(channels_coll.find_one({"channel_id": channel_id, "is_new": True}))
 
 
-def set_channel_to_old(channel_id):
+def set_channel_to_old(channel_id: str) -> UpdateResult:
     client = db.get_client()
     database = client.get_database('searchtube')
     channels_coll = database.get_collection('channels')
