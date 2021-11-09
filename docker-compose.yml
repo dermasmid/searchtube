@@ -29,6 +29,6 @@ services:
         volumes:
             - ./.data/db:/data/db:delegated
 
-        # uncomment if you want mongobd to be accessible outside of docker
+        # uncomment if you want MongoDB to be accessible outside of docker
         # ports:
         #     - "27017:27017"

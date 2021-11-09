@@ -1,5 +1,4 @@
 flask
-flask_limiter
 pymongo
 python-dotenv
 youtube_dl
