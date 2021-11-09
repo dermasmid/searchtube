@@ -15,7 +15,7 @@ def hello():
 def search():
     q = request.args.get('q')
     channel_id = request.args.get('channel_id')
-    limit = request.args.get('limit', 0)
+    limit = int(request.args.get('limit', 0))
 
     if channel_id == '0':
         try:
